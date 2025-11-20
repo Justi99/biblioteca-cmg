@@ -17,7 +17,7 @@
                                 <th>Código</th>
                                 <th>Dni</th>
                                 <th>Nombre</th>
-                                <th>Carrera</th>
+                                <th>Grado</th>
                                 <th>Dirección</th>
                                 <th>Teléfono</th>
                                 <th>Estado</th>
@@ -65,8 +65,8 @@
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="carrera">Carrera</label>
-                                <input id="carrera" class="form-control" type="text" name="carrera" required placeholder="Carrera">
+                                <label for="Grado">Grado</label>
+                                <input id="Grado" class="form-control" type="text" name="Grado" required placeholder="Grado">
                             </div>
                         </div>
                         <div class="col-md-12">

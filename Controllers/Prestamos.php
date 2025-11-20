@@ -175,10 +175,10 @@ class Prestamos extends Controller
         $pdf->Cell(72, 5, "Estudiante", 1, 1, 'C', 1);
         $pdf->SetTextColor(0, 0, 0);
         $pdf->Cell(35, 5, 'Nombre.', 1, 0, 'L');
-        $pdf->Cell(37, 5, 'Carrera.', 1, 1, 'L');
+        $pdf->Cell(37, 5, 'Grado.', 1, 1, 'L');
         $pdf->SetFont('Arial', '', 8);
         $pdf->Cell(35, 5, $prestamo['nombre'], 1, 0, 'L');
-        $pdf->Cell(37, 5, $prestamo['carrera'], 1, 1, 'L');
+        $pdf->Cell(37, 5, $prestamo['Grado'], 1, 1, 'L');
         $pdf->Ln();
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->Cell(72, 5, 'Fecha Prestamo', 0, 1, 'C');

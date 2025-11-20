@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function(){
             {'data': 'codigo'},
             {'data': 'dni'},
             {'data': 'nombre'},
-            {'data':'carrera'},
+            {'data':'Grado'},
             {'data': 'direccion'},
             {'data': 'telefono'},
             {'data': 'estado'},
@@ -511,11 +511,11 @@ function registrarEstudiante(e) {
     const codigo = document.getElementById("codigo");
     const dni = document.getElementById("dni");
     const nombre = document.getElementById("nombre");
-    const carrera = document.getElementById("carrera");
+    const Grado = document.getElementById("Grado");
     const telefono = document.getElementById("telefono");
     const direccion = document.getElementById("direccion");
     if (codigo.value == "" || dni.value == "" || nombre.value == ""
-    || telefono.value == "" || direccion.value == "" || carrera.value == "") {
+    || telefono.value == "" || direccion.value == "" || Grado.value == "") {
         alertas('Todo los campos son requeridos', 'warning');
     } else {
         const url = base_url + "Estudiantes/registrar";
@@ -549,7 +549,7 @@ function btnEditarEst(id) {
             document.getElementById("codigo").value = res.codigo;
             document.getElementById("dni").value = res.dni;
             document.getElementById("nombre").value = res.nombre;
-            document.getElementById("carrera").value = res.carrera;
+            document.getElementById("Grado").value = res.Grado;
             document.getElementById("telefono").value = res.telefono;
             document.getElementById("direccion").value = res.direccion;
             $("#nuevoEstudiante").modal("show");
