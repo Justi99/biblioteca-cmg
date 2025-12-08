@@ -22,7 +22,10 @@
         </div>
         <div class="login-box">
             <form class="login-form" id="frmLogin" onsubmit="frmLogin(event);">
-                <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>Iniciar Sesión</h3>
+               <h3 class="login-head">
+                <img src="Assets/img/mg.png" alt="Logo" style="height: 1.5em; vertical-align: middle; margin-right: 10px;"> 
+                Iniciar Sesión
+                </h3>
                 <div class="form-group">
                     <label class="control-label">USUARIO</label>
                     <input class="form-control" type="text" placeholder="Usuario" id="usuario" name="usuario" autofocus required>

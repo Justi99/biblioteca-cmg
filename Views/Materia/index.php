@@ -18,6 +18,23 @@
                                 <th>Estado</th>
                                 <th></th>
                             </tr>
+                            <tr id="fila-filtros">
+                                <th></th> 
+
+                                <th>
+                                    <input type="text" class="form-control form-control-sm filtro-columna" data-index="1" placeholder="Filtrar Nombre">
+                                </th>
+
+                                <th>
+                                    <select class="form-control form-control-sm filtro-columna" data-index="2">
+                                        <option value="">Todos</option>
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </select>
+                                </th>
+
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody>
                         </tbody>

@@ -23,6 +23,31 @@
                                 <th>Estado</th>
                                 <th></th>
                             </tr>
+                            <tr id="fila-filtros">
+        <th></th> 
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="1" placeholder="Código"></th>
+                        
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="2" placeholder="Dni"></th>
+                        
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="3" placeholder="Nombre"></th>
+                        
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="4" placeholder="Grado"></th>
+                        
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="5" placeholder="Dirección"></th>
+                        
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="6" placeholder="Teléfono"></th>
+                        
+                        <th>
+                            <select class="form-control form-control-sm filtro-columna" data-index="7">
+                                <option value="">Todos</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </th>
+
+                        <th></th>
+                    </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -54,7 +79,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="dni">Dni</label>
-                                <input id="dni" class="form-control" type="text" name="dni" required placeholder="Dni">
+                                <input id="dni" class="form-control" type="text" name="dni" required placeholder="Dni" maxlength="8" minlength="8" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -64,15 +89,50 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="carrera">Grado</label>
-                                <input id="carrera" class="form-control" type="text" name="carrera" required placeholder="Carrera">
+                        <div class="form-group">
+                            <label for="carrera">Grado (Seleccione)</label>
+                            
+                            <div class="row" style="margin-bottom: 10px;">
+                                <div class="col-6">
+                                    <select class="form-control" id="lista_numero" onchange="combinarGrado()">
+                                        <option value="" disabled selected>N°</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-6">
+                                    <select class="form-control" id="lista_seccion" onchange="combinarGrado()">
+                                        <option value="" disabled selected>Sec</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                    </select>
+                                </div>
                             </div>
+
+                            <input id="carrera" class="form-control" type="text" name="carrera" required placeholder="Ej: 1-A" readonly>
                         </div>
+                    </div>
+
+                    <script>
+                    function combinarGrado() {
+                        // Tomamos los valores
+                        var num = document.getElementById('lista_numero').value;
+                        var sec = document.getElementById('lista_seccion').value;
+
+                        // Si ambos tienen valor, los juntamos en el input "carrera"
+                        if (num && sec) {
+                            document.getElementById('carrera').value = num + '-' + sec;
+                        }
+                    }
+                    </script>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="telefono">Télefono</label>
-                                <input id="telefono" class="form-control" type="text" name="telefono" required placeholder="Teléfono">
+                                <input id="telefono" class="form-control" type="text" name="telefono" required placeholder="Teléfono" maxlength="9" minlength="9" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             </div>
                         </div>
                         <div class="col-md-12">

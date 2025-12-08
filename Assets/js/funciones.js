@@ -79,51 +79,88 @@ document.addEventListener("DOMContentLoaded", function(){
     });
     //Fin de la tabla usuarios
     tblEst = $('#tblEst').DataTable({
-        ajax: {
-            url: base_url + "Estudiantes/listar",
-            dataSrc: ''
-        },
-        columns: [{'data': 'id'},
-            {'data': 'codigo'},
-            {'data': 'dni'},
-            {'data': 'nombre'},
-            {'data':'carrera'},
-            {'data': 'direccion'},
-            {'data': 'telefono'},
-            {'data': 'estado'},
-            {'data': 'acciones'}
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons
-    });
+    orderCellsTop: true, // Esto es vital para tus filtros nuevos
+    fixedHeader: true,
+    ajax: {
+        url: base_url + "Estudiantes/listar",
+        dataSrc: ''
+    },
+    columns: [
+        {'data': 'id'},
+        {'data': 'codigo'},
+        {'data': 'dni'},
+        {'data': 'nombre'},
+        {'data': 'carrera'},
+        {'data': 'direccion'},
+        {'data': 'telefono'},
+        {'data': 'estado'},
+        {'data': 'acciones'}
+    ],
+    language,
+    // --- AQUÍ ESTÁ EL CAMBIO ---
+    // Antes tenías <'col-sm-4'f> al final. Lo he borrado.
+    // Ahora 'l' (length) ocupa 4 columnas y 'B' (botones) ocupa 8 columnas centradas.
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons
+});
+// Agrega esto DESPUÉS de cerrar tu configuración de DataTable });
+// Este código sirve tanto para escribir (keyup) como para seleccionar (change)
+
+$(document).on('keyup change', '.filtro-columna', function() {
+    var table = $('#tblEst').DataTable();
+    var colIndex = $(this).data('index');
+    
+    table
+        .column(colIndex)
+        .search(this.value)
+        .draw();
+});
     //Fin de la tabla Estudiantes
     tblMateria = $('#tblMateria').DataTable({
-        ajax: {
-            url: base_url + "Materia/listar",
-            dataSrc: ''
+    orderCellsTop: true, // Vital para los filtros
+    fixedHeader: true,
+    ajax: {
+        url: base_url + "Materia/listar",
+        dataSrc: ''
+    },
+    columns: [{
+            'data': 'id'
         },
-        columns: [{
-                'data': 'id'
-            },
-            {
-                'data': 'materia'
-            },
-            {
-                'data': 'estado'
-            },
-            {
-                'data': 'acciones'
-            }
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons
-    });
+        {
+            'data': 'materia'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+    ],
+    language,
+    // Modificado: Se quitó la 'f' y se amplió el espacio de botones a col-sm-8
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons
+});
+// --- CÓDIGO DE FILTRADO UNIVERSAL (SIRVE PARA TODAS LAS TABLAS) ---
+// Copia y pega esto al final de tu archivo JS, fuera de cualquier función
+
+$(document).on('keyup change', '.filtro-columna', function() {
+    // 1. Detectamos automáticamente a qué tabla pertenece el input
+    var table = $(this).closest('table').DataTable();
+    
+    // 2. Obtenemos el índice de la columna
+    var colIndex = $(this).data('index');
+    
+    // 3. Filtramos ESA tabla específica
+    table
+        .column(colIndex)
+        .search(this.value)
+        .draw();
+});
     //Fin de la tabla Materias
     tblAutor = $('#tblAutor').DataTable({
         ajax: {
@@ -508,29 +545,47 @@ function frmEstudiante() {
 
 function registrarEstudiante(e) {
     e.preventDefault();
+    
     const codigo = document.getElementById("codigo");
     const dni = document.getElementById("dni");
     const nombre = document.getElementById("nombre");
     const carrera = document.getElementById("carrera");
     const telefono = document.getElementById("telefono");
     const direccion = document.getElementById("direccion");
-    if (codigo.value == "" || dni.value == "" || nombre.value == ""
-    || telefono.value == "" || direccion.value == "" || carrera.value == "") {
-        alertas('Todo los campos son requeridos', 'warning');
-    } else {
-        const url = base_url + "Estudiantes/registrar";
-        const frm = document.getElementById("frmEstudiante");
-        const http = new XMLHttpRequest();
-        http.open("POST", url, true);
-        http.send(new FormData(frm));
-        http.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                const res = JSON.parse(this.responseText);
-                $("#nuevoEstudiante").modal("hide");
-                frm.reset();
-                tblEst.ajax.reload();
-                alertas(res.msg, res.icono);
-            }
+
+    if (codigo.value == "" || dni.value == "" || nombre.value == "" ||
+        telefono.value == "" || direccion.value == "" || carrera.value == "") {
+        alertas('Todos los campos son requeridos', 'warning');
+        return;
+    }
+
+    if (dni.value.trim().length !== 8) {
+        alertas('El DNI debe tener 8 dígitos exactos.', 'warning');
+        return;
+    }
+
+       if (telefono.value.trim().length !== 9) {
+        alertas('El teléfono debe tener 9 dígitos exactos.', 'warning');
+        return;
+    }
+
+    const url = base_url + "Estudiantes/registrar";
+    const frm = document.getElementById("frmEstudiante");
+    const http = new XMLHttpRequest();
+    http.open("POST", url, true);
+    http.send(new FormData(frm));
+    
+    http.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            const res = JSON.parse(this.responseText);
+            $("#nuevoEstudiante").modal("hide");
+          
+            if(document.getElementById("lista_numero")) document.getElementById("lista_numero").value = "";
+            if(document.getElementById("lista_seccion")) document.getElementById("lista_seccion").value = "";
+            
+            frm.reset();
+            tblEst.ajax.reload();
+            alertas(res.msg, res.icono);
         }
     }
 }
@@ -542,7 +597,7 @@ function btnEditarEst(id) {
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();
-    http.onreadystatechange = function () {
+    http.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
             document.getElementById("id").value = res.id;
@@ -552,6 +607,14 @@ function btnEditarEst(id) {
             document.getElementById("carrera").value = res.carrera;
             document.getElementById("telefono").value = res.telefono;
             document.getElementById("direccion").value = res.direccion;
+
+            if (res.carrera && res.carrera.includes('-')) {
+                let partes = res.carrera.split('-'); 
+                if(document.getElementById("lista_numero")) document.getElementById("lista_numero").value = partes[0];
+                if(document.getElementById("lista_seccion")) document.getElementById("lista_seccion").value = partes[1];
+            }
+            // ---------------------------------------------------------------
+
             $("#nuevoEstudiante").modal("show");
         }
     }
