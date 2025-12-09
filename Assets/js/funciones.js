@@ -148,18 +148,29 @@ $(document).on('keyup change', '.filtro-columna', function() {
 // --- CÓDIGO DE FILTRADO UNIVERSAL (SIRVE PARA TODAS LAS TABLAS) ---
 // Copia y pega esto al final de tu archivo JS, fuera de cualquier función
 
+// --- CÓDIGO DE FILTRADO UNIVERSAL MEJORADO (CON SOLUCIÓN ACTIVO/INACTIVO) ---
+// Pégalo al final de tu archivo .js
+
 $(document).on('keyup change', '.filtro-columna', function() {
     // 1. Detectamos automáticamente a qué tabla pertenece el input
     var table = $(this).closest('table').DataTable();
     
-    // 2. Obtenemos el índice de la columna
+    // 2. Obtenemos el índice de la columna y el valor
     var colIndex = $(this).data('index');
-    
-    // 3. Filtramos ESA tabla específica
-    table
-        .column(colIndex)
-        .search(this.value)
-        .draw();
+    var valor = this.value;
+
+    // 3. Lógica para diferenciar Listas (Select) de Texto normal
+    if ($(this).is('select')) {
+        // Si es una lista (como el Estado), buscamos la palabra EXACTA
+        // El símbolo ^ inicia la búsqueda y $ la termina.
+        // Así evitamos que "Activo" coincida con "Inactivo".
+        var regex = valor ? '^' + valor + '$' : '';
+        table.column(colIndex).search(regex, true, false).draw();
+        
+    } else {
+        // Si es un input de texto normal, búsqueda normal (parcial)
+        table.column(colIndex).search(valor).draw();
+    }
 });
     //Fin de la tabla Materias
     tblAutor = $('#tblAutor').DataTable({
@@ -259,51 +270,52 @@ $(document).on('keyup change', '.filtro-columna', function() {
     });
     //fin Libros
     tblPrestar = $('#tblPrestar').DataTable({
-        ajax: {
-            url: base_url + "Prestamos/listar",
-            dataSrc: ''
+    orderCellsTop: true, // <--- IMPORTANTE PARA LOS FILTROS
+    ajax: {
+        url: base_url + "Prestamos/listar",
+        dataSrc: ''
+    },
+    columns: [{
+            'data': 'id'
         },
-        columns: [{
-                'data': 'id'
-            },
-            {
-                'data': 'titulo'
-            },
-            {
-                'data': 'nombre'
-            },
-            {
-                'data': 'fecha_prestamo'
-            },
-
-            {
-                'data': 'fecha_devolucion'
-            },
-            {
-                'data': 'cantidad'
-            },
-            {
-                'data': 'observacion'
-            },
-            {
-                'data': 'estado'
-            },
-            {
-                'data': 'acciones'
-            }
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons,
-        "resonsieve": true,
-        "bDestroy": true,
-        "iDisplayLength": 10,
-        "order": [
-            [0, "desc"]
-        ]
-    });
+        {
+            'data': 'titulo'
+        },
+        {
+            'data': 'nombre'
+        },
+        {
+            'data': 'fecha_prestamo'
+        },
+        {
+            'data': 'fecha_devolucion'
+        },
+        {
+            'data': 'cantidad'
+        },
+        {
+            'data': 'observacion'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+    ],
+    language,
+    // Eliminada la 'f' y ajustado el ancho a col-sm-8 para los botones
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons,
+    "responsive": true, // Corregí el typo "resonsieve"
+    "bDestroy": true,
+    "iDisplayLength": 10,
+    "order": [
+        [0, "desc"]
+    ]
+});
     $('.estudiante').select2({
         placeholder: 'Buscar Estudiante',
         minimumInputLength: 2,
@@ -1162,7 +1174,34 @@ function frmConfig(e) {
     }
 }
 function frmPrestar() {
+    // 1. Limpiamos el formulario primero
     document.getElementById("frmPrestar").reset();
+
+    // --- BLOQUEO DE FECHAS ---
+    
+    // Calculamos la fecha de HOY (Formato Año-Mes-Día)
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Agrega cero si es necesario (01, 05...)
+    const day = String(date.getDate()).padStart(2, '0');
+    const fechaHoy = `${year}-${month}-${day}`;
+
+    // CONFIGURACIÓN 1: Fecha de Préstamo
+    // Regla: Bloqueado para ser SOLO el día de hoy
+    const inputPrestamo = document.getElementById("fecha_prestamo");
+    inputPrestamo.value = fechaHoy;             // Pone la fecha automáticamente
+    inputPrestamo.setAttribute("min", fechaHoy); // No deja ir atrás
+    inputPrestamo.setAttribute("max", fechaHoy); // No deja ir adelante
+
+    // CONFIGURACIÓN 2: Fecha de Devolución
+    // Regla: Desde hoy hacia el futuro
+    const inputDevolucion = document.getElementById("fecha_devolucion");
+    inputDevolucion.value = fechaHoy;            // Sugiere hoy por defecto
+    inputDevolucion.setAttribute("min", fechaHoy); // No deja poner fechas pasadas
+    
+    // -------------------------
+
+    // 2. Mostramos el modal
     $("#prestar").modal("show");
 }
 function btnEntregar(id) {

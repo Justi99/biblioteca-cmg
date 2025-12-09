@@ -21,6 +21,31 @@
                         <th>Estado</th>
                         <th></th>
                     </tr>
+                    <tr id="fila-filtros">
+                        <th></th> 
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="1" placeholder="Libro"></th>
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="2" placeholder="Estudiante"></th>
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="3" placeholder="F. Préstamo"></th>
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="4" placeholder="F. Dev."></th>
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="5" placeholder="Cant"></th>
+
+                        <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="6" placeholder="Obs."></th>
+
+                        <th>
+                            <select class="form-control form-control-sm filtro-columna" data-index="7">
+                                <option value="">Todos</option>
+                                <option value="Prestado">Prestado</option>
+                                <option value="Devuelto">Devuelto</option>
+                            </select>
+                        </th>
+
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
                 </tbody>
