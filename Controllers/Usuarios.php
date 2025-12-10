@@ -18,36 +18,41 @@ class Usuarios extends Controller{
         $this->views->getView($this, "index");
     }
     public function listar()
-    {
-        if (empty($_SESSION['activo'])) {
-            header("location: " . base_url);
-        }
-        $data = $this->model->getUsuarios();
-        for ($i=0; $i < count($data); $i++) { 
-            if ($data[$i]['estado'] == 1) {
-                if ($data[$i]['id'] != 1) {
-                    $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
-                    $data[$i]['acciones'] = '<div>
-                    <button class="btn btn-dark" onclick="btnRolesUser(' . $data[$i]['id'] . ')"><i class="fa fa-key"></i></button>
-                    <button class="btn btn-primary" type="button" onclick="btnEditarUser(' . $data[$i]['id'] . ');"><i class="fa fa-pencil-square-o"></i></button>
-                    <button class="btn btn-danger" type="button" onclick="btnEliminarUser(' . $data[$i]['id'] . ');"><i class="fa fa-trash-o"></i></button>
-                    <div/>';
-                }else{
-                    $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
-                    $data[$i]['acciones'] = '<div class"text-center">
-                    <span class="badge-primary p-1 rounded">Super Administrador</span>
-                    </div>'; 
-                }
-            }else {
-                $data[$i]['estado'] = '<span class="badge badge-danger">Inactivo</span>';
-                $data[$i]['acciones'] = '<div>
-                <button class="btn btn-success" type="button" onclick="btnReingresarUser(' . $data[$i]['id'] . ');"><i class="fa fa-reply-all"></i></button>
-                <div/>';
-            }
-        }
-        echo json_encode($data, JSON_UNESCAPED_UNICODE);
-        die();
+{
+    if (empty($_SESSION['activo'])) {
+        header("location: " . base_url);
     }
+    $data = $this->model->getUsuarios();
+    for ($i=0; $i < count($data); $i++) { 
+        if ($data[$i]['estado'] == 1) {
+            if ($data[$i]['id'] != 1) {
+                $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
+                
+                // --- AQUÍ AGREGAMOS EL BOTÓN DEL CANDADO ---
+                $data[$i]['acciones'] = '<div>
+                <button class="btn btn-dark" onclick="btnRolesUser(' . $data[$i]['id'] . ')"><i class="fa fa-key"></i></button>
+                <button class="btn btn-warning" type="button" onclick="btnReestablecer(' . $data[$i]['id'] . ');"><i class="fa fa-lock"></i></button>
+                <button class="btn btn-primary" type="button" onclick="btnEditarUser(' . $data[$i]['id'] . ');"><i class="fa fa-pencil-square-o"></i></button>
+                <button class="btn btn-danger" type="button" onclick="btnEliminarUser(' . $data[$i]['id'] . ');"><i class="fa fa-trash-o"></i></button>
+                <div/>';
+                // -------------------------------------------
+                
+            }else{
+                $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
+                $data[$i]['acciones'] = '<div class"text-center">
+                <span class="badge-primary p-1 rounded">Super Administrador</span>
+                </div>'; 
+            }
+        }else {
+            $data[$i]['estado'] = '<span class="badge badge-danger">Inactivo</span>';
+            $data[$i]['acciones'] = '<div>
+            <button class="btn btn-success" type="button" onclick="btnReingresarUser(' . $data[$i]['id'] . ');"><i class="fa fa-reply-all"></i></button>
+            <div/>';
+        }
+    }
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    die();
+}
     public function validar()
     {
         $usuario = strClean($_POST['usuario']);
@@ -214,4 +219,30 @@ class Usuarios extends Controller{
         session_destroy();
         header("location: ".base_url);
     }
+
+    // --- FUNCIÓN NUEVA PARA RESTABLECER CLAVE ---
+public function reset($id)
+{
+    // Seguridad: Solo usuarios logueados pueden hacer esto
+    if (empty($_SESSION['activo'])) {
+        header("location: " . base_url);
+        exit;
+    }
+
+    // 1. Encriptamos la contraseña por defecto: "12345678"
+    // Usamos SHA256 igual que en tu método registrar/validar
+    $hash = hash("SHA256", "12345678");
+
+    // 2. Llamamos al modelo para actualizar (reutilizamos el método existente)
+    $data = $this->model->actualizarPass($hash, $id);
+
+    if ($data == "modificado") {
+        $msg = array('msg' => 'Contraseña restablecida a: 12345678', 'icono' => 'success');
+    } else {
+        $msg = array('msg' => 'Error al restablecer la contraseña', 'icono' => 'error');
+    }
+
+    echo json_encode($msg, JSON_UNESCAPED_UNICODE);
+    die();
+}
 }
