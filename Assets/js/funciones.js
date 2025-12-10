@@ -801,11 +801,10 @@ function btnReingresarMat(id) {
 }
 //Fin Materia
 function frmAutor() {
-    document.getElementById("title").textContent= "Nuevo Autor";
-    document.getElementById("btnAccion").textContent= "Registrar";
+    document.getElementById("title").textContent = "Nuevo Autor";
+    document.getElementById("btnAccion").textContent = "Registrar";
     document.getElementById("frmAutor").reset();
     document.getElementById("id").value = "";
-    deleteImg();
     $("#nuevoAutor").modal("show");
 }
 
@@ -824,8 +823,7 @@ function registrarAutor(e) {
             if (this.readyState == 4 && this.status == 200) {
                 const res = JSON.parse(this.responseText);
                 $("#nuevoAutor").modal("hide");
-                frm.reset();
-                tblAutor.ajax.reload();
+                tblAutor.ajax.reload(); // Recarga la tabla de autores
                 alertas(res.msg, res.icono);
             }
         }
@@ -835,21 +833,22 @@ function registrarAutor(e) {
 function btnEditarAutor(id) {
     document.getElementById("title").textContent = "Actualizar Autor";
     document.getElementById("btnAccion").textContent = "Modificar";
+    
     const url = base_url + "Autor/editar/" + id;
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();
+    
     http.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
+            
+            // Cargamos solo ID y Nombre (Autor)
             document.getElementById("id").value = res.id;
             document.getElementById("autor").value = res.autor;
-            document.getElementById("foto_actual").value = res.imagen;
-            document.getElementById("img-preview").src = base_url + 'Assets/img/autor/' + res.imagen;
-            document.getElementById("icon-image").classList.add("d-none");
-            document.getElementById("icon-cerrar").innerHTML = `
-            <button class="btn btn-danger" onclick="deleteImg()">
-            <i class="fa fa-times-circle"></i></button>`;
+            
+            // SE ELIMINARON LAS LÍNEAS QUE CARGABAN LA IMAGEN PREVIA
+            
             $("#nuevoAutor").modal("show");
         }
     }
@@ -1017,8 +1016,10 @@ function frmLibros() {
     document.getElementById("btnAccion").textContent = "Registrar";
     document.getElementById("frmLibro").reset();
     document.getElementById("id").value = "";
+    $("#autor").val("").trigger("change");
+    $("#editorial").val("").trigger("change");
+    $("#materia").val("").trigger("change");
     $("#nuevoLibro").modal("show");
-    deleteImg();
 }
 
 function registrarLibro(e) {
@@ -1028,11 +1029,9 @@ function registrarLibro(e) {
     const editorial = document.getElementById("editorial");
     const materia = document.getElementById("materia");
     const cantidad = document.getElementById("cantidad");
-    const num_pagina = document.getElementById("num_pagina");
 
-    if (titulo.value == '' || autor.value == '' || editorial.value == ''
-    || materia.value == '' || cantidad.value == '' || num_pagina.value == '') {
-        alertas('Todo los campos son requeridos', 'warning');
+    if (titulo.value == "" || autor.value == "" || editorial.value == "" || materia.value == "" || cantidad.value == "") {
+        alertas('Todos los campos son requeridos', 'warning');
     } else {
         const url = base_url + "Libros/registrar";
         const frm = document.getElementById("frmLibro");
@@ -1044,7 +1043,6 @@ function registrarLibro(e) {
                 const res = JSON.parse(this.responseText);
                 $("#nuevoLibro").modal("hide");
                 tblLibros.ajax.reload();
-                frm.reset();
                 alertas(res.msg, res.icono);
             }
         }
@@ -1054,28 +1052,26 @@ function registrarLibro(e) {
 function btnEditarLibro(id) {
     document.getElementById("title").textContent = "Actualizar Libro";
     document.getElementById("btnAccion").textContent = "Modificar";
+    
     const url = base_url + "Libros/editar/" + id;
     const http = new XMLHttpRequest();
     http.open("GET", url, true);
     http.send();
+    
     http.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             const res = JSON.parse(this.responseText);
-              document.getElementById("id").value = res.id;
-              document.getElementById("titulo").value = res.titulo;
-              document.getElementById("autor").value = res.id_autor;
-              document.getElementById("editorial").value = res.id_editorial;
-              document.getElementById("materia").value = res.id_materia;
-              document.getElementById("cantidad").value = res.cantidad;
-              document.getElementById("num_pagina").value = res.num_pagina;
-              document.getElementById("anio_edicion").value = res.anio_edicion;
-              document.getElementById("descripcion").value = res.descripcion;
-            document.getElementById("img-preview").src = base_url + 'Assets/img/libros/'+ res.imagen;
-            document.getElementById("icon-cerrar").innerHTML = `
-            <button class="btn btn-danger" onclick="deleteImg()">
-            <i class="fa fa-times-circle"></i></button>`;
-            document.getElementById("icon-image").classList.add("d-none");
-            document.getElementById("foto_actual").value = res.imagen;
+            
+            document.getElementById("id").value = res.id;
+            document.getElementById("titulo").value = res.titulo;
+            document.getElementById("cantidad").value = res.cantidad;
+            document.getElementById("num_pagina").value = res.num_pagina;
+            document.getElementById("anio_edicion").value = res.anio_edicion;
+            document.getElementById("descripcion").value = res.descripcion;
+            
+            $("#autor").val(res.id_autor).trigger("change");
+            $("#editorial").val(res.id_editorial).trigger("change");
+            $("#materia").val(res.id_materia).trigger("change");
             $("#nuevoLibro").modal("show");
         }
     }

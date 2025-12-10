@@ -10,7 +10,7 @@
         <div class="tile">
             <div class="tile-body">
                 <div class="table-responsive">
-                    <table class="table table-light mt-4" id="tblEst">
+                    <table class="table table-bordered table-hover" id="tblEst">
                         <thead class="thead-dark">
                             <tr>
                                 <th>Id</th>
