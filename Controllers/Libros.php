@@ -23,7 +23,8 @@ class Libros extends Controller
     {
         $data = $this->model->getLibros();
         for ($i = 0; $i < count($data); $i++) {
-            $data[$i]['foto'] = '<img class="img-thumbnail" src="' . base_url . "Assets/img/libros/" . $data[$i]['imagen'] . '" width="100">';
+            // SE ELIMINÓ LA LÍNEA QUE GENERABA LA FOTO/IMAGEN
+            
             if ($data[$i]['estado'] == 1) {
                 $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
                 $data[$i]['acciones'] = '<div class="d-flex">
@@ -51,34 +52,17 @@ class Libros extends Controller
         $anio_edicion = strClean($_POST['anio_edicion']);
         $descripcion = strClean($_POST['descripcion']);
         $id = strClean($_POST['id']);
-        $img = $_FILES['imagen'];
-        $name = $img['name'];
-        $fecha = date("YmdHis");
-        $tmpName = $img['tmp_name'];
+        
+        // SE ELIMINÓ TODA LA LÓGICA DE $_FILES, IMAGENES Y SUBIDAS
+
         if (empty($titulo) || empty($autor) || empty($editorial) || empty($materia) || empty($cantidad)) {
             $msg = array('msg' => 'Todo los campos son requeridos', 'icono' => 'warning');
         } else {
-            if (!empty($name)) {
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                $formatos_permitidos =  array('png', 'jpeg', 'jpg');
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                if (!in_array($extension, $formatos_permitidos)) {
-                    $msg = array('msg' => 'Archivo no permitido', 'icono' => 'warning');
-                } else {
-                    $imgNombre = $fecha . ".jpg";
-                    $destino = "Assets/img/libros/" . $imgNombre;
-                }
-            } else if (!empty($_POST['foto_actual']) && empty($name)) {
-                $imgNombre = $_POST['foto_actual'];
-            } else {
-                $imgNombre = "logo.png";
-            }
             if ($id == "") {
-                $data = $this->model->insertarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $imgNombre);
+                // INSERTAR (Sin imagen)
+                $data = $this->model->insertarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion);
+                
                 if ($data == "ok") {
-                    if (!empty($name)) {
-                        move_uploaded_file($tmpName, $destino);
-                    }
                     $msg = array('msg' => 'Libro registrado', 'icono' => 'success');
                 } else if ($data == "existe") {
                     $msg = array('msg' => 'El libro ya existe', 'icono' => 'warning');
@@ -86,17 +70,10 @@ class Libros extends Controller
                     $msg = array('msg' => 'Error al registrar', 'icono' => 'error');
                 }
             } else {
-                $imgDelete = $this->model->editLibros($id);
-                if ($imgDelete['imagen'] != 'logo.png') {
-                    if (file_exists("Assets/img/libros/" . $imgDelete['imagen'])) {
-                        unlink("Assets/img/libros/" . $imgDelete['imagen']);
-                    }
-                }
-                $data = $this->model->actualizarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $imgNombre, $id);
+                // ACTUALIZAR (Sin imagen y sin borrar fotos viejas)
+                $data = $this->model->actualizarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id);
+                
                 if ($data == "modificado") {
-                    if (!empty($name)) {
-                        move_uploaded_file($tmpName, $destino);
-                    }
                     $msg = array('msg' => 'Libro modificado', 'icono' => 'success');
                 } else {
                     $msg = array('msg' => 'Error al modificar', 'icono' => 'error');

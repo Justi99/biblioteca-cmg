@@ -23,7 +23,8 @@ class Autor extends Controller
     {
         $data = $this->model->getAutor();
         for ($i = 0; $i < count($data); $i++) {
-            $data[$i]['imagen'] = '<img class="img-thumbnail" src="' . base_url . "Assets/img/autor/" . $data[$i]['imagen'] . '" width="80">';
+            // SE ELIMINÓ LA LÍNEA QUE CREABA LA ETIQUETA IMG
+            
             if ($data[$i]['estado'] == 1) {
                 $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
                 $data[$i]['acciones'] = '<div>
@@ -43,54 +44,29 @@ class Autor extends Controller
     public function registrar()
     {
         $autor = strClean($_POST['autor']);
-        $img = $_FILES['imagen'];
-        $name = $img['name'];
         $id = strClean($_POST['id']);
-        $fecha = date("YmdHis");
-        $tmpName = $img['tmp_name'];
+        
+        // SE ELIMINÓ TODA LA LÓGICA DE $_FILES, $img, $fecha, validaciones de foto, etc.
+
         if (empty($autor)) {
             $msg = array('msg' => 'El nombre es requerido', 'icono' => 'warning');
         } else {
-            if (!empty($name)) {
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                $formatos_permitidos =  array('png', 'jpeg', 'jpg');
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                if (!in_array($extension, $formatos_permitidos)) {
-                    $msg = array('msg' => 'Archivo no permitido', 'icono' => 'warning');
-                } else {
-                    $imgNombre = $fecha . ".jpg";
-                    $destino = "Assets/img/autor/" . $imgNombre;
-                }
-            } else if (!empty($_POST['foto_actual']) && empty($name)) {
-                $imgNombre = $_POST['foto_actual'];
-            } else {
-                $imgNombre = "logo.png";
-            }
             if ($id == "") {
-                $data = $this->model->insertarAutor($autor, $imgNombre);
+                // Insertar: Solo pasamos el nombre
+                $data = $this->model->insertarAutor($autor);
+                
                 if ($data == "ok") {
                     $msg = array('msg' => 'Autor registrado', 'icono' => 'success');
-                    if (!empty($name)) {
-                        move_uploaded_file($tmpName, $destino);
-                    }
                 } else if ($data == "existe") {
                     $msg = array('msg' => 'El autor ya existe', 'icono' => 'warning');
                 } else {
                     $msg = array('msg' => 'Error al registrar', 'icono' => 'error');
                 }
             } else {
-
-                $imgDelete = $this->model->editAutor($id);
-                if ($imgDelete['imagen'] != 'logo.png') {
-                    if (file_exists("Assets/img/autor/" . $imgDelete['imagen'])) {
-                        unlink("Assets/img/autor/" . $imgDelete['imagen']);
-                    }
-                }
-                $data = $this->model->actualizarAutor($autor, $imgNombre, $id);
+                // Actualizar: Solo pasamos nombre e ID (ya no borramos fotos antiguas)
+                $data = $this->model->actualizarAutor($autor, $id);
+                
                 if ($data == "modificado") {
-                    if (!empty($name)) {
-                        move_uploaded_file($tmpName, $destino);
-                    }
                     $msg = array('msg' => 'Autor modificado', 'icono' => 'success');
                 } else {
                     $msg = array('msg' => 'Error al modificar', 'icono' => 'error');

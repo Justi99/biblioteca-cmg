@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function(){
     });
     //Fin de la tabla usuarios
     tblEst = $('#tblEst').DataTable({
-    orderCellsTop: true, // Esto es vital para tus filtros nuevos
+    orderCellsTop: true, 
     fixedHeader: true,
     ajax: {
         url: base_url + "Estudiantes/listar",
@@ -97,16 +97,11 @@ document.addEventListener("DOMContentLoaded", function(){
         {'data': 'acciones'}
     ],
     language,
-    // --- AQUÍ ESTÁ EL CAMBIO ---
-    // Antes tenías <'col-sm-4'f> al final. Lo he borrado.
-    // Ahora 'l' (length) ocupa 4 columnas y 'B' (botones) ocupa 8 columnas centradas.
     dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
          "<'row'<'col-sm-12'tr>>" +
          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
     buttons
 });
-// Agrega esto DESPUÉS de cerrar tu configuración de DataTable });
-// Este código sirve tanto para escribir (keyup) como para seleccionar (change)
 
 $(document).on('keyup change', '.filtro-columna', function() {
     var table = $('#tblEst').DataTable();
@@ -119,7 +114,7 @@ $(document).on('keyup change', '.filtro-columna', function() {
 });
     //Fin de la tabla Estudiantes
     tblMateria = $('#tblMateria').DataTable({
-    orderCellsTop: true, // Vital para los filtros
+    orderCellsTop: true,
     fixedHeader: true,
     ajax: {
         url: base_url + "Materia/listar",
@@ -139,135 +134,121 @@ $(document).on('keyup change', '.filtro-columna', function() {
         }
     ],
     language,
-    // Modificado: Se quitó la 'f' y se amplió el espacio de botones a col-sm-8
     dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
         "<'row'<'col-sm-12'tr>>" +
         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
     buttons
 });
-// --- CÓDIGO DE FILTRADO UNIVERSAL (SIRVE PARA TODAS LAS TABLAS) ---
-// Copia y pega esto al final de tu archivo JS, fuera de cualquier función
-
-// --- CÓDIGO DE FILTRADO UNIVERSAL MEJORADO (CON SOLUCIÓN ACTIVO/INACTIVO) ---
-// Pégalo al final de tu archivo .js
 
 $(document).on('keyup change', '.filtro-columna', function() {
-    // 1. Detectamos automáticamente a qué tabla pertenece el input
     var table = $(this).closest('table').DataTable();
-    
-    // 2. Obtenemos el índice de la columna y el valor
     var colIndex = $(this).data('index');
     var valor = this.value;
-
-    // 3. Lógica para diferenciar Listas (Select) de Texto normal
     if ($(this).is('select')) {
-        // Si es una lista (como el Estado), buscamos la palabra EXACTA
-        // El símbolo ^ inicia la búsqueda y $ la termina.
-        // Así evitamos que "Activo" coincida con "Inactivo".
         var regex = valor ? '^' + valor + '$' : '';
         table.column(colIndex).search(regex, true, false).draw();
         
     } else {
-        // Si es un input de texto normal, búsqueda normal (parcial)
         table.column(colIndex).search(valor).draw();
     }
 });
     //Fin de la tabla Materias
     tblAutor = $('#tblAutor').DataTable({
-        ajax: {
-            url: base_url + "Autor/listar",
-            dataSrc: ''
+    orderCellsTop: true,
+    fixedHeader: true,
+    ajax: {
+        url: base_url + "Autor/listar",
+        dataSrc: ''
+    },
+    columns: [{
+            'data': 'id'
         },
-        columns: [{
-                'data': 'id'
-            },
-            {
-                'data': 'imagen'
-            },
-            {
-                'data': 'autor'
-            },
-            {
-                'data': 'estado'
-            },
-            {
-                'data': 'acciones'
-            }
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons
-    });
+        {
+            'data': 'autor'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+    ],
+    language,
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons
+});
     //Fin de la tabla Autor
-    tblEditorial= $('#tblEditorial').DataTable({
-        ajax: {
-            url: base_url + "Editorial/listar",
-            dataSrc: ''
+    tblEditorial = $('#tblEditorial').DataTable({
+    orderCellsTop: true, // Vital para los filtros
+    fixedHeader: true,
+    ajax: {
+        url: base_url + "Editorial/listar",
+        dataSrc: ''
+    },
+    columns: [{
+            'data': 'id'
         },
-        columns: [{
-                'data': 'id'
-            },
-            {
-                'data': 'editorial'
-            },
-            {
-                'data': 'estado'
-            },
-            {
-                'data': 'acciones'
-            }
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons
-    });
+        {
+            'data': 'editorial'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+    ],
+    language,
+    // Se quitó la 'f' para borrar el buscador global
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons
+});
     //Fin de la tabla editorial
     tblLibros = $('#tblLibros').DataTable({
-        ajax: {
-            url: base_url + "Libros/listar",
-            dataSrc: ''
+    orderCellsTop: true,
+    fixedHeader: true,
+    ajax: {
+        url: base_url + "Libros/listar",
+        dataSrc: ''
+    },
+    columns: [{
+            'data': 'id'
         },
-        columns: [{
-                'data': 'id'
-            },
-            {
-                'data': 'titulo'
-            },
-            {
-                'data': 'cantidad'
-            },            
-            {
-                'data': 'autor'
-            },            
-            {
-                'data': 'editorial'
-            },
-	    {
-                'data': 'materia'
-            },
-            {
-                'data': 'foto'
-            },
-            {
-                'data': 'descripcion'
-            },
-            {
-                'data': 'estado'
-            },
-            {
-                'data': 'acciones'
-            }
-        ],
-        language,
-        dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons
-    });
+        {
+            'data': 'titulo'
+        },
+        {
+            'data': 'cantidad'
+        },
+        {
+            'data': 'autor'
+        },
+        {
+            'data': 'editorial'
+        },
+        {
+            'data': 'materia'
+        },
+        {
+            'data': 'descripcion'
+        },
+        {
+            'data': 'estado'
+        },
+        {
+            'data': 'acciones'
+        }
+    ],
+    language,
+    dom: "<'row'<'col-sm-4'l><'col-sm-8 text-center'B>>" +
+         "<'row'<'col-sm-12'tr>>" +
+         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    buttons
+});
     //fin Libros
     tblPrestar = $('#tblPrestar').DataTable({
     orderCellsTop: true, // <--- IMPORTANTE PARA LOS FILTROS
@@ -1203,34 +1184,24 @@ function frmConfig(e) {
     }
 }
 function frmPrestar() {
-    // 1. Limpiamos el formulario primero
     document.getElementById("frmPrestar").reset();
 
-    // --- BLOQUEO DE FECHAS ---
-    
-    // Calculamos la fecha de HOY (Formato Año-Mes-Día)
     const date = new Date();
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Agrega cero si es necesario (01, 05...)
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const fechaHoy = `${year}-${month}-${day}`;
 
-    // CONFIGURACIÓN 1: Fecha de Préstamo
-    // Regla: Bloqueado para ser SOLO el día de hoy
+   
     const inputPrestamo = document.getElementById("fecha_prestamo");
-    inputPrestamo.value = fechaHoy;             // Pone la fecha automáticamente
-    inputPrestamo.setAttribute("min", fechaHoy); // No deja ir atrás
-    inputPrestamo.setAttribute("max", fechaHoy); // No deja ir adelante
+    inputPrestamo.value = fechaHoy;           
+    inputPrestamo.setAttribute("min", fechaHoy);
+    inputPrestamo.setAttribute("max", fechaHoy);
 
-    // CONFIGURACIÓN 2: Fecha de Devolución
-    // Regla: Desde hoy hacia el futuro
     const inputDevolucion = document.getElementById("fecha_devolucion");
-    inputDevolucion.value = fechaHoy;            // Sugiere hoy por defecto
-    inputDevolucion.setAttribute("min", fechaHoy); // No deja poner fechas pasadas
+    inputDevolucion.value = fechaHoy;          
+    inputDevolucion.setAttribute("min", fechaHoy); 
     
-    // -------------------------
-
-    // 2. Mostramos el modal
     $("#prestar").modal("show");
 }
 function btnEntregar(id) {

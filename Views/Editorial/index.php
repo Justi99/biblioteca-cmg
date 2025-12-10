@@ -16,6 +16,24 @@
                                 <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+
+                            <tr id="fila-filtros">
+                                <th></th>
+
+                                <th>
+                                    <input type="text" class="form-control form-control-sm filtro-columna" data-index="1" placeholder="Editorial">
+                                </th>
+
+                                <th>
+                                    <select class="form-control form-control-sm filtro-columna" data-index="2">
+                                        <option value="">Todos</option>
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </select>
+                                </th>
+
                                 <th></th>
                             </tr>
                         </thead>

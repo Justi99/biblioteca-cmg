@@ -11,13 +11,15 @@ class AutorModel extends Query
         $res = $this->selectAll($sql);
         return $res;
     }
-    public function insertarAutor($autor, $img)
+   public function insertarAutor($autor)
     {
         $verificar = "SELECT * FROM autor WHERE autor = '$autor'";
         $existe = $this->select($verificar);
         if (empty($existe)) {
-            $query = "INSERT INTO autor(autor, imagen) VALUES (?, ?)";
-            $datos = array($autor, $img);
+            // Se eliminó la columna 'imagen' y un signo de interrogación (?)
+            $query = "INSERT INTO autor(autor) VALUES (?)";
+            // Se eliminó la variable $img del array
+            $datos = array($autor);
             $data = $this->save($query, $datos);
             if ($data == 1) {
                 $res = "ok";
@@ -29,16 +31,21 @@ class AutorModel extends Query
         }
         return $res;
     }
+
     public function editAutor($id)
     {
         $sql = "SELECT * FROM autor WHERE id = $id";
         $res = $this->select($sql);
         return $res;
     }
-    public function actualizarAutor($autor, $img, $id)
+
+    // Eliminamos el parámetro $img de la función
+    public function actualizarAutor($autor, $id)
     {
-        $query = "UPDATE autor SET autor = ?, imagen = ? WHERE id = ?";
-        $datos = array($autor, $img ,$id);
+        // Se eliminó la parte "imagen = ?" de la consulta
+        $query = "UPDATE autor SET autor = ? WHERE id = ?";
+        // Se eliminó la variable $img del array
+        $datos = array($autor, $id);
         $data = $this->save($query, $datos);
         if ($data == 1) {
             $res = "modificado";

@@ -19,11 +19,33 @@
                                 <th>Autor</th>
                                 <th>Editorial</th>
                                 <th>Materia</th>
-                                <th>Foto</th>
                                 <th>Descripción</th>
                                 <th>Estado</th>
                                 <th></th>
                             </tr>
+                            
+                            <tr id="fila-filtros">
+                                <th></th> <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="1" placeholder="Título"></th>
+                                
+                                <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="2" placeholder="Cant"></th>
+                                
+                                <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="3" placeholder="Autor"></th>
+                                
+                                <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="4" placeholder="Edit."></th>
+                                
+                                <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="5" placeholder="Materia"></th>
+                                
+                                <th><input type="text" class="form-control form-control-sm filtro-columna" data-index="6" placeholder="Desc."></th>
+                                
+                                <th>
+                                    <select class="form-control form-control-sm filtro-columna" data-index="7">
+                                        <option value="">Todos</option>
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </select>
+                                </th>
+                                
+                                <th></th> </tr>
                         </thead>
                         <tbody>
                         </tbody>
@@ -102,20 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Logo</label>
-                            <div class="card border-primary">
-                                <div class="card-body">
-                                    <input type="hidden" id="foto_actual" name="foto_actual">
-                                    <label for="imagen" id="icon-image" class="btn btn-primary"><i class="fa fa-cloud-upload"></i></label>
-                                    <span id="icon-cerrar"></span>
-                                    <input id="imagen" class="d-none" type="file" name="imagen" onchange="preview(event)">
-                                    <img class="img-thumbnail" id="img-preview" src="" width="150">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="col-md-12">
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit" id="btnAccion">Registrar</button>

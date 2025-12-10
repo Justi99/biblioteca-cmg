@@ -11,13 +11,17 @@ class LibrosModel extends Query
         $res = $this->selectAll($sql);
         return $res;
     }
-    public function insertarLibros($titulo,$id_autor,$id_editorial,$id_materia,$cantidad,$num_pagina,$anio_edicion,$descripcion,$imgNombre)
+    
+    // MODIFICADO: Se quitó $imgNombre
+    public function insertarLibros($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion)
     {
         $verificar = "SELECT * FROM libro WHERE titulo = '$titulo'";
         $existe = $this->select($verificar);
         if (empty($existe)) {
-            $query = "INSERT INTO libro(titulo, id_autor, id_editorial, id_materia, cantidad, num_pagina, anio_edicion, descripcion, imagen) VALUES (?,?,?,?,?,?,?,?,?)";
-            $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $imgNombre);
+            // Se quitó la columna 'imagen' y un '?'
+            $query = "INSERT INTO libro(titulo, id_autor, id_editorial, id_materia, cantidad, num_pagina, anio_edicion, descripcion) VALUES (?,?,?,?,?,?,?,?)";
+            // Se quitó $imgNombre del array
+            $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion);
             $data = $this->save($query, $datos);
             if ($data == 1) {
                 $res = "ok";
@@ -29,16 +33,21 @@ class LibrosModel extends Query
         }
         return $res;
     }
+    
     public function editLibros($id)
     {
         $sql = "SELECT * FROM libro WHERE id = $id";
         $res = $this->select($sql);
         return $res;
     }
-    public function actualizarLibros($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $imgNombre, $id)
+
+    // MODIFICADO: Se quitó $imgNombre
+    public function actualizarLibros($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id)
     {
-        $query = "UPDATE libro SET titulo = ?, id_autor=?, id_editorial=?, id_materia=?, cantidad=?, num_pagina=?, anio_edicion=?, descripcion=?, imagen=? WHERE id = ?";
-        $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $imgNombre, $id);
+        // Se quitó 'imagen=?'
+        $query = "UPDATE libro SET titulo = ?, id_autor=?, id_editorial=?, id_materia=?, cantidad=?, num_pagina=?, anio_edicion=?, descripcion=? WHERE id = ?";
+        // Se quitó $imgNombre del array
+        $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id);
         $data = $this->save($query, $datos);
         if ($data == 1) {
             $res = "modificado";
@@ -47,6 +56,7 @@ class LibrosModel extends Query
         }
         return $res;
     }
+    
     public function estadoLibros($estado, $id)
     {
         $query = "UPDATE libro SET estado = ? WHERE id = ?";
