@@ -23,7 +23,7 @@ class Libros extends Controller
     {
         $data = $this->model->getLibros();
         for ($i = 0; $i < count($data); $i++) {
-            // SE ELIMINÓ LA LÍNEA QUE GENERABA LA FOTO/IMAGEN
+            
             
             if ($data[$i]['estado'] == 1) {
                 $data[$i]['estado'] = '<span class="badge badge-success">Activo</span>';
@@ -52,14 +52,13 @@ class Libros extends Controller
         $anio_edicion = strClean($_POST['anio_edicion']);
         $descripcion = strClean($_POST['descripcion']);
         $id = strClean($_POST['id']);
-        
-        // SE ELIMINÓ TODA LA LÓGICA DE $_FILES, IMAGENES Y SUBIDAS
+
 
         if (empty($titulo) || empty($autor) || empty($editorial) || empty($materia) || empty($cantidad)) {
             $msg = array('msg' => 'Todo los campos son requeridos', 'icono' => 'warning');
         } else {
             if ($id == "") {
-                // INSERTAR (Sin imagen)
+
                 $data = $this->model->insertarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion);
                 
                 if ($data == "ok") {
@@ -70,7 +69,7 @@ class Libros extends Controller
                     $msg = array('msg' => 'Error al registrar', 'icono' => 'error');
                 }
             } else {
-                // ACTUALIZAR (Sin imagen y sin borrar fotos viejas)
+
                 $data = $this->model->actualizarLibros($titulo, $autor, $editorial, $materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id);
                 
                 if ($data == "modificado") {

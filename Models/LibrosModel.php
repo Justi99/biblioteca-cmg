@@ -12,15 +12,15 @@ class LibrosModel extends Query
         return $res;
     }
     
-    // MODIFICADO: Se quitó $imgNombre
+
     public function insertarLibros($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion)
     {
         $verificar = "SELECT * FROM libro WHERE titulo = '$titulo'";
         $existe = $this->select($verificar);
         if (empty($existe)) {
-            // Se quitó la columna 'imagen' y un '?'
+
             $query = "INSERT INTO libro(titulo, id_autor, id_editorial, id_materia, cantidad, num_pagina, anio_edicion, descripcion) VALUES (?,?,?,?,?,?,?,?)";
-            // Se quitó $imgNombre del array
+
             $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion);
             $data = $this->save($query, $datos);
             if ($data == 1) {
@@ -41,12 +41,12 @@ class LibrosModel extends Query
         return $res;
     }
 
-    // MODIFICADO: Se quitó $imgNombre
+  
     public function actualizarLibros($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id)
     {
-        // Se quitó 'imagen=?'
+
         $query = "UPDATE libro SET titulo = ?, id_autor=?, id_editorial=?, id_materia=?, cantidad=?, num_pagina=?, anio_edicion=?, descripcion=? WHERE id = ?";
-        // Se quitó $imgNombre del array
+
         $datos = array($titulo, $id_autor, $id_editorial, $id_materia, $cantidad, $num_pagina, $anio_edicion, $descripcion, $id);
         $data = $this->save($query, $datos);
         if ($data == 1) {
